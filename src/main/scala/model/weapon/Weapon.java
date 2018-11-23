@@ -24,6 +24,13 @@ public abstract class Weapon {
     }
 
     public boolean canTouch(Mob enemy){
+        double x = Math.abs(this.mob.getPosition()[0] - enemy.getPosition()[0]);
+        double y = Math.abs(this.mob.getPosition()[1] - enemy.getPosition()[1]);
+        double z = Math.abs(this.mob.getPosition()[2] - enemy.getPosition()[2]);
+        distXY=sqrt(x*x + y*y);
+        dist=sqrt(distXY*distXY+z*z);
+        //return if
+
         return true;
     }
 
