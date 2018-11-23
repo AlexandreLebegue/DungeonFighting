@@ -28,7 +28,7 @@ public abstract class Mob {
     }
 
     public void takeDamage(int dmg){
-        if(dmg>health) {
+        if(dmg>=health) {
             state = "dead";
             health = 0;
         }else health -= dmg;
