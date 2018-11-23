@@ -15,6 +15,7 @@ public abstract class Weapon {
     private Dice d20 = new Dice(20);
     private int range = 10;
     private Mob weaponOwner;
+    private double distAttack;
 
     public Weapon(){}
 
@@ -30,12 +31,12 @@ public abstract class Weapon {
     }
 
     public boolean canTouch(Mob enemy){
-        double x = Math.abs(this.mob.getPosition()[0] - enemy.getPosition()[0]);
-        double y = Math.abs(this.mob.getPosition()[1] - enemy.getPosition()[1]);
-        double z = Math.abs(this.mob.getPosition()[2] - enemy.getPosition()[2]);
-        distXY=sqrt(x*x + y*y);
-        dist=sqrt(distXY*distXY+z*z);
-        //return if
+        double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
+        double y = Math.abs(this.weaponOwner.getPosition()[1] - enemy.getPosition()[1]);
+        double z = Math.abs(this.weaponOwner.getPosition()[2] - enemy.getPosition()[2]);
+        double distXY=sqrt(x*x + y*y);
+        double dist=sqrt(distXY*distXY+z*z);
+        return dist<distAttack;
 
         return true;
     }
