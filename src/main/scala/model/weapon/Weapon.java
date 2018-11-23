@@ -37,7 +37,7 @@ public abstract class Weapon {
         double distXY=Math.sqrt(x*x + y*y);
         double dist=Math.sqrt(distXY*distXY+z*z);
         return dist<distAttack;
-        
+
     }
 
     public void attackMob(Mob enemy){
