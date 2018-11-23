@@ -1,4 +1,9 @@
 package model.weapon;
 
-public class GreatSword {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class GreatSword extends Weapon {
+
+
 }

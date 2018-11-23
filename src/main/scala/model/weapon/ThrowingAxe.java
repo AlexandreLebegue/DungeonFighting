@@ -1,4 +1,8 @@
 package model.weapon;
 
-public class ThrowingAxe {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ThrowingAxe extends Weapon {
+
 }

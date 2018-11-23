@@ -1,4 +1,8 @@
 package model.weapon;
 
-public class LongBow {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class LongBow extends Weapon {
+
 }

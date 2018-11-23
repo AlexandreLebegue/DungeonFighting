@@ -1,4 +1,8 @@
 package model.weapon;
 
-public class BattleAxe {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class BattleAxe extends Weapon{
+
 }

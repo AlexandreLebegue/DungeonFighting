@@ -1,4 +1,14 @@
 package model.mob;
 
-public class BarbareOrc {
+import model.weapon.DoubleAxe;
+import model.weapon.LongBow;
+
+public class BarbareOrc extends Mob {
+    public BarbareOrc(){
+        this.name = "BarbareOrc";
+        this.health = 142;
+        this.armor = 17;
+        this.weapons.add(new DoubleAxe());
+        this.weapons.add(new LongBow());
+    }
 }

@@ -14,6 +14,8 @@ public abstract class Weapon {
     private HashMap<String, Integer>  specialAbility;
     private Dice d20 = new Dice(20);
 
+    public Weapon(){}
+
     public Weapon(String name, ArrayList<Integer> precision, int damage, HashMap<String, Integer> specialAbility) {
         this.name = name;
         this.precision = precision;
