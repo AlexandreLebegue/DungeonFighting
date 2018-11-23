@@ -22,7 +22,9 @@ public class GreatSword extends Weapon {
 
     }
 
-    private int calculDamage(){
+    @Override
+    protected int calculDamage(){
         return d6.getAThrow() + d6.getAThrow() + d6.getAThrow() + damage;
     }
+
 }

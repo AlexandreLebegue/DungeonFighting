@@ -44,7 +44,7 @@ public abstract class Weapon {
         }
     }
 
-    private int calculDamage(){
+    protected int calculDamage(){
         return damage;
     }
 
