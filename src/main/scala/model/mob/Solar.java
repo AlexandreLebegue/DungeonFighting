@@ -9,8 +9,8 @@ public class Solar extends Mob {
         this.name = "Solar";
         this.health = 363;
         this.armor = 44;
-        this.weapons.add(new GreatSword());
-        this.weapons.add(new LongBow());
+        this.weapons.add(new GreatSword(this));
+        this.weapons.add(new LongBow(this));
     }
 
     public void action(){
