@@ -15,6 +15,7 @@ public abstract class Weapon {
     protected HashMap<String, Integer>  specialAbility;
     private Dice d20 = new Dice(20);
     private Mob weaponOwner;
+    private double distAttack;
 
     public Weapon(){}
 
@@ -30,7 +31,13 @@ public abstract class Weapon {
     }
 
     public boolean canTouch(Mob enemy){
-        return true;
+        double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
+        double y = Math.abs(this.weaponOwner.getPosition()[1] - enemy.getPosition()[1]);
+        double z = Math.abs(this.weaponOwner.getPosition()[2] - enemy.getPosition()[2]);
+        double distXY=Math.sqrt(x*x + y*y);
+        double dist=Math.sqrt(distXY*distXY+z*z);
+        return dist<distAttack;
+
     }
 
     public void attackMob(Mob enemy){
