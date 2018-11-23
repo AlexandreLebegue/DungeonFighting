@@ -10,7 +10,7 @@ public class WarLord extends Mob {
         this.health = 141;
         this.armor = 27;
         //this.weapons.add(new GreatSword()); //Add fist competence ?
-        this.weapons.add(new ThrowingAxe());
+        this.weapons.add(new ThrowingAxe(this));
     }
 
 }

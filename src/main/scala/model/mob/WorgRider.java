@@ -9,8 +9,8 @@ public class WorgRider extends Mob {
         this.name = "WorgRider";
         this.health = 13;
         this.armor = 18;
-        this.weapons.add(new BattleAxe());
-        this.weapons.add(new ShortBow());
+        this.weapons.add(new BattleAxe(this));
+        this.weapons.add(new ShortBow(this));
     }
 
 }

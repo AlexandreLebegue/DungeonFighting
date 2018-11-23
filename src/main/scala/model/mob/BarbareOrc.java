@@ -8,7 +8,7 @@ public class BarbareOrc extends Mob {
         this.name = "BarbareOrc";
         this.health = 142;
         this.armor = 17;
-        this.weapons.add(new DoubleAxe());
-        this.weapons.add(new LongBow());
+        this.weapons.add(new DoubleAxe(this));
+        this.weapons.add(new LongBow(this));
     }
 }

@@ -8,12 +8,12 @@ import java.util.HashMap;
 
 public abstract class Weapon {
 
-    private String name;
-    private ArrayList<Integer> precision;
-    private int damage;
-    private HashMap<String, Integer>  specialAbility;
+    protected String name;
+    protected ArrayList<Integer> precision;
+    protected int damage;
+    protected int range = 10;
+    protected HashMap<String, Integer>  specialAbility;
     private Dice d20 = new Dice(20);
-    private int range = 10;
     private Mob weaponOwner;
 
     public Weapon(){}
