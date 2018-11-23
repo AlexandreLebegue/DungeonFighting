@@ -48,4 +48,6 @@ public abstract class Mob {
     public ArrayList<Weapon> getWeapons() {return weapons;}
     public void setWeapons(ArrayList<Weapon> weapons) {this.weapons = weapons;}
     public void addWeapon(Weapon weapon){weapons.add(weapon);}
+
+    public void action(){ }
 }
