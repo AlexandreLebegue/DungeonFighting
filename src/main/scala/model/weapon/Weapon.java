@@ -13,8 +13,14 @@ public abstract class Weapon {
     private int damage;
     private HashMap<String, Integer>  specialAbility;
     private Dice d20 = new Dice(20);
+    private int range = 10;
+    private Mob weaponOwner;
 
     public Weapon(){}
+
+    public Weapon(Mob mob){
+        weaponOwner = mob;
+    }
 
     public Weapon(String name, ArrayList<Integer> precision, int damage, HashMap<String, Integer> specialAbility) {
         this.name = name;
