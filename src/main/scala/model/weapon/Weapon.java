@@ -34,11 +34,10 @@ public abstract class Weapon {
         double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
         double y = Math.abs(this.weaponOwner.getPosition()[1] - enemy.getPosition()[1]);
         double z = Math.abs(this.weaponOwner.getPosition()[2] - enemy.getPosition()[2]);
-        double distXY=sqrt(x*x + y*y);
-        double dist=sqrt(distXY*distXY+z*z);
+        double distXY=Math.sqrt(x*x + y*y);
+        double dist=Math.sqrt(distXY*distXY+z*z);
         return dist<distAttack;
-
-        return true;
+        
     }
 
     public void attackMob(Mob enemy){
