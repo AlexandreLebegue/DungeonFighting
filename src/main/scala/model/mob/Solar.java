@@ -12,4 +12,20 @@ public class Solar extends Mob {
         this.weapons.add(new GreatSword());
         this.weapons.add(new LongBow());
     }
+
+    public void action(){
+        //a decommenterquand on pourras avoir la list des enemie
+        /*
+        val enemyList = getEnemyList();
+        for (enemy <- enemyList) {
+        //enemyList.foreach{ enemy =>
+            if (GreatSword.canTouch(enemy)) {
+                GreatSword.attackMob(enemy);
+            } else {
+                LongBow.attackMob(enemy);
+            }
+        }
+        */
+
+    }
 }
