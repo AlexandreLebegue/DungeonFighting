@@ -13,6 +13,7 @@ public abstract class Mob {
     protected int armor = 10; //default value ...
     protected ArrayList<Weapon> weapons;
     protected String state = "alive"; //default value ...
+    private ArrayList<Mob> enemies = new ArrayList<>();
     private double[] position;
 
     public Mob(){
@@ -34,10 +35,11 @@ public abstract class Mob {
         }else health -= dmg;
     }
 
-    public void attack(Mob ennemy, String pWeapon){
-        Weapon weapon = weapons.get(weapons.indexOf(pWeapon));
+    public void attack(Mob ennemy, Weapon weapon){
         weapon.attackMob(ennemy);
     }
+
+    /*
     public void action(Mob[] enemyList){
         //Mob[] enemyList = getEnemyList();
         for(Mob enemy : enemyList) {
@@ -49,6 +51,30 @@ public abstract class Mob {
                 this.move();
             }
         }
+    }*/
+
+    public String think(){
+        System.out.println("Début du tour de "+ name);
+        Mob enemy = determineEnemyToAttack();
+        for(Weapon weapon : weapons) {
+            if (weapon.canTouch(enemy)) {
+                attack(enemy, weapon);
+                return "attaque";
+            }
+        }
+        move();
+        return "move";
+    }
+
+
+    private Mob determineEnemyToAttack(){
+        int lowestLife = Integer.MAX_VALUE;
+        Mob currentEnemy = null;
+        for(Mob enemy : enemies) {
+            if(enemy.isDead()) continue;
+            if(enemy.getHealth() < lowestLife){currentEnemy = enemy; }
+        }
+        return currentEnemy;
     }
 
     public String getName() {return name;}
@@ -71,6 +97,8 @@ public abstract class Mob {
 
     public double[] getPosition() {return position;}
     public void setPosition(double[] position) {this.position = position;}
+
+    public void setEnemies(ArrayList<Mob> enemies){this.enemies = enemies;}
 
     abstract public boolean haveToMove();
     public void move(){
