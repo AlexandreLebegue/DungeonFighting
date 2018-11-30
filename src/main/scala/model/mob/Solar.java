@@ -13,19 +13,13 @@ public class Solar extends Mob {
         this.weapons.add(new LongBow(this));
     }
 
-    public void action(){
-        //a decommenterquand on pourras avoir la list des enemie
-        /*
-        Mob[] enemyList = getEnemyList();
-        for(Mob enemy : enemyList) {
-        //enemyList.foreach{ enemy =>
-            if (getWeapons().get(0).canTouch(enemy)) {
-                getWeapons().get(0).attackMob(enemy);
-            } else {
-                getWeapons().get(0).attackMob(enemy);
-            }
-        }
-        */
 
+    public boolean haveToMove(){
+        return false;
     }
+
+    public void move(){
+        //ne  se deplace pas
+    }
+
 }

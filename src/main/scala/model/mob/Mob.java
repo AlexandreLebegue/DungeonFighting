@@ -38,6 +38,18 @@ public abstract class Mob {
         Weapon weapon = weapons.get(weapons.indexOf(pWeapon));
         weapon.attackMob(ennemy);
     }
+    public void action(Mob[] enemyList){
+        //Mob[] enemyList = getEnemyList();
+        for(Mob enemy : enemyList) {
+            if (this.getWeapons().get(0).canTouch(enemy)) {
+                this.getWeapons().get(0).attackMob(enemy);
+            } else if ( this.getWeapons().get(0).canTouch(enemy)){
+                this.getWeapons().get(1).attackMob(enemy);
+            }else if(this.haveToMove()){
+                this.move();
+            }
+        }
+    }
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
@@ -59,5 +71,10 @@ public abstract class Mob {
 
     public int[] getPosition() {return position;}
     public void setPosition(int[] position) {this.position = position;}
+
+    abstract public boolean haveToMove();
+    abstract public void move();
+
+    //public Mob[] getEnemyList(){}
 
 }
