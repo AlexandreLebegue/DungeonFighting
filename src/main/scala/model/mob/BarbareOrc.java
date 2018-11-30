@@ -11,4 +11,17 @@ public class BarbareOrc extends Mob {
         this.weapons.add(new DoubleAxe(this));
         this.weapons.add(new LongBow(this));
     }
+
+
+    public boolean haveToMove(){
+        return true;
+    }
+
+    public void move(){
+        int[] pos = this.getPosition();
+        pos[0]= pos[0]-10;
+        pos[1]= pos[1]-10;
+        this.setPosition(pos);
+    }
+
 }

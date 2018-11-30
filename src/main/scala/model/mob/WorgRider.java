@@ -13,18 +13,16 @@ public class WorgRider extends Mob {
         this.weapons.add(new ShortBow(this));
     }
 
-
-    public void action(){
-        //recuper solar
-        /*
-        Solar solar = getSolar();
-        if (getWeapons().get(0).canTouch(solar)){
-            getWeapons().get(0).attackMob(solar);
-        }else if(getWeapons().get(1).canTouch(solar)){
-            getWeapons().get(1).attackMob(solar);
-        }
-        //ajouter deplacement
-        */
+    public boolean haveToMove(){
+        return true;
     }
+
+    public void move(){
+        int[] pos = this.getPosition();
+        pos[0]= pos[0]-10;
+        pos[1]= pos[1]-10;
+        this.setPosition(pos);
+    }
+
 }
 
