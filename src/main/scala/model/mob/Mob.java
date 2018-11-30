@@ -13,7 +13,7 @@ public abstract class Mob {
     protected int armor = 10; //default value ...
     protected ArrayList<Weapon> weapons;
     protected String state = "alive"; //default value ...
-    private int[] position;
+    private double[] position;
 
     public Mob(){
         System.out.println("New mob instancied");
@@ -69,11 +69,24 @@ public abstract class Mob {
     public void setWeapons(ArrayList<Weapon> weapons) {this.weapons = weapons;}
     public void addWeapon(Weapon weapon){weapons.add(weapon);}
 
-    public int[] getPosition() {return position;}
-    public void setPosition(int[] position) {this.position = position;}
+    public double[] getPosition() {return position;}
+    public void setPosition(double[] position) {this.position = position;}
 
     abstract public boolean haveToMove();
-    abstract public void move();
+    public void move(){
+        double[] pos = this.getPosition();
+        this.setPosition(pos);
+        double angle1=Math.tan(pos[1]/pos[0]);
+        double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
+        double angle2 = Math.tan(distxy/pos[2]);
+        double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
+        pos[2] = distTot*Math.acos(angle2);
+        double moveground = pos[2]*Math.acos(angle2);
+        pos[1] = moveground*Math.acos(angle1);
+        pos[0] = moveground*Math.asin(angle1);
+        this.setPosition(pos);
+
+    }
 
     //public Mob[] getEnemyList(){}
 

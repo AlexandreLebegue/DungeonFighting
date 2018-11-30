@@ -18,8 +18,6 @@ public class Solar extends Mob {
         return false;
     }
 
-    public void move(){
-        //ne  se deplace pas
-    }
+
 
 }

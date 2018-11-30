@@ -17,12 +17,6 @@ public class WarLord extends Mob {
         return true;
     }
 
-    public void move(){
-        int[] pos = this.getPosition();
-        pos[0]= pos[0]-10;
-        pos[1]= pos[1]-10;
-        this.setPosition(pos);
-    }
 
 
 }
