@@ -120,8 +120,6 @@ public abstract class Mob {
         pos[0] = moveground*Math.asin(angle1);
         this.setPosition(pos);
 
-    }
-
-    //public Mob[] getEnemyList(){}oieeoh
+    //public Mob[] getEnemyList(){}
 
 }
