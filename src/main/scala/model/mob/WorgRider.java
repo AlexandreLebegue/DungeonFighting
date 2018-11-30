@@ -16,7 +16,7 @@ public class WorgRider extends Mob {
     public boolean haveToMove(){
         return true;
     }
-    
+
 
 }
 

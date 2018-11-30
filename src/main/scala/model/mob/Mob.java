@@ -74,14 +74,15 @@ public abstract class Mob {
 
     abstract public boolean haveToMove();
     public void move(){
+        double movedist=10;
         double[] pos = this.getPosition();
         this.setPosition(pos);
         double angle1=Math.tan(pos[1]/pos[0]);
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
         double angle2 = Math.tan(distxy/pos[2]);
         double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
-        pos[2] = distTot*Math.acos(angle2);
-        double moveground = pos[2]*Math.acos(angle2);
+        pos[2] = pos[2]-movedist*Math.acos(angle2);
+        double moveground = pos[2]*Math.atan(angle2);
         pos[1] = moveground*Math.acos(angle1);
         pos[0] = moveground*Math.asin(angle1);
         this.setPosition(pos);
