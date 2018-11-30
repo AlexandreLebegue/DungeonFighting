@@ -82,7 +82,12 @@ public abstract class Mob {
         double angle2 = Math.tan(distxy/pos[2]);
         double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
         pos[2] = pos[2]-movedist*Math.acos(angle2);
-        double moveground = pos[2]*Math.atan(angle2);
+        double moveground ;
+        if(pos[2]!= 0) {
+            moveground = pos[2] * Math.atan(angle2);
+        }else{
+            moveground = distxy;
+        }
         pos[1] = moveground*Math.acos(angle1);
         pos[0] = moveground*Math.asin(angle1);
         this.setPosition(pos);
