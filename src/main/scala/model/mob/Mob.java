@@ -53,16 +53,16 @@ public abstract class Mob {
         }
     }*/
 
-    public String think(){
+    protected String think(Mob enemy){
         System.out.println("Début du tour de "+ name);
-        Mob enemy = determineEnemyToAttack();
+       // Mob enemy = determineEnemyToAttack();
         for(Weapon weapon : weapons) {
             if (weapon.canTouch(enemy)) {
                 attack(enemy, weapon);
                 return "attaque";
             }
         }
-        move();
+        move(); //else, move the character
         return "move";
     }
 
@@ -105,19 +105,19 @@ public abstract class Mob {
         double movedist=10;
         double[] pos = this.getPosition();
         this.setPosition(pos);
-        double angle1=Math.tan(pos[1]/pos[0]);
+        double angle1=Math.tan(Math.abs(pos[1]/pos[0]));
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
         double moveground ;
         if(pos[2]!= 0) {
-            double angle2 = Math.tan(distxy/pos[2]);
+            double angle2 = Math.tan(Math.abs(distxy/pos[2]));
             //double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
             pos[2] = pos[2]-movedist*Math.acos(angle2);
             moveground = pos[2] * Math.atan(angle2);
         }else{
             moveground = distxy;
         }
-        pos[1] = moveground*Math.acos(angle1);
-        pos[0] = moveground*Math.asin(angle1);
+        pos[1] = (pos[1]/Math.abs(pos[1]))*moveground*Math.acos(angle1);
+        pos[0] = (pos[0]/Math.abs(pos[0]))*moveground*Math.asin(angle1);
         this.setPosition(pos);
 
     //public Mob[] getEnemyList(){}
