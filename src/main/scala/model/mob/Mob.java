@@ -3,7 +3,7 @@ package model.mob;
 import model.weapon.Weapon;
 
 import java.util.ArrayList;
-
+import java.util.Random;
 public abstract class Mob {
 
     protected String name = "Uknown"; //default value ...
@@ -13,6 +13,7 @@ public abstract class Mob {
     protected int armor = 10; //default value ...
     protected ArrayList<Weapon> weapons;
     protected String state = "alive"; //default value ...
+    protected boolean canFly=false; //default value ...
     private ArrayList<Mob> enemies = new ArrayList<>();
     private double[] position;
 
@@ -27,6 +28,8 @@ public abstract class Mob {
         this.weapons = weapons;
         this.type = type;
     }
+
+
 
     public void takeDamage(int dmg){
         if(dmg>=health) {
@@ -123,5 +126,22 @@ public abstract class Mob {
     }
 
     //public Mob[] getEnemyList(){}oieeoh
+
+    public void generatePos(){
+        double z=0;
+        if (this.canFly) {
+            double minZ = 0;
+            double maxZ = 50;
+            z = Math.random() * maxZ + minZ;
+        }
+        double minX=2;
+        double maxX=50;
+        double x=Math.random() * maxX + minX;
+        double minY=-50;
+        double maxY=50;
+        double y=Math.random() * (maxY-minY) + minY;
+        double[] pos={x,y,z};
+        this.setPosition(pos);
+    }
 
 }
