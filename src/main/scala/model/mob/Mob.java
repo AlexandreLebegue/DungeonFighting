@@ -53,16 +53,16 @@ public abstract class Mob {
         }
     }*/
 
-    public String think(){
+    protected String think(Mob enemy){
         System.out.println("Début du tour de "+ name);
-        Mob enemy = determineEnemyToAttack();
+       // Mob enemy = determineEnemyToAttack();
         for(Weapon weapon : weapons) {
             if (weapon.canTouch(enemy)) {
                 attack(enemy, weapon);
                 return "attaque";
             }
         }
-        move();
+        move(); //else, move the character
         return "move";
     }
 
