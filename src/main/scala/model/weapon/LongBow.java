@@ -19,7 +19,7 @@ public class LongBow extends Weapon {
         precision = new ArrayList<Integer>();
         Collections.addAll(precision, 31, 26, 21, 16);
         damage = 14;
-        range  = 20;
+        range  = Integer.MAX_VALUE;
     }
 
     @Override

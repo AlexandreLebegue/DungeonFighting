@@ -3,10 +3,11 @@ package model.weapon;
 import model.Dice;
 import model.mob.Mob;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Weapon {
+public abstract class Weapon implements Serializable  {
 
     private static int CRITIQUE = 20;
 
@@ -33,13 +34,12 @@ public abstract class Weapon {
     }
 
     public boolean canTouch(Mob enemy){
-        double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
+        /*double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
         double y = Math.abs(this.weaponOwner.getPosition()[1] - enemy.getPosition()[1]);
         double z = Math.abs(this.weaponOwner.getPosition()[2] - enemy.getPosition()[2]);
         double distXY=Math.sqrt(x*x + y*y);
         double dist=Math.sqrt(distXY*distXY+z*z);
-        return dist<this.distAttack;
-
+        return dist<this.distAttack;*/ return false;
     }
 
     public void attackMob(Mob enemy){

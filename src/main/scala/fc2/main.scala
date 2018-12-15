@@ -16,6 +16,7 @@ object main extends App {
 
   // Create all creatures
   val solar = new Solar()
+  println("SOLAR ADD = " + solar)
   val worgsRider1 = new WorgRider()
   val worgsRider2 = new WorgRider()
   val worgsRider3 = new WorgRider()
@@ -30,6 +31,44 @@ object main extends App {
   val barbaresOrc2 = new BarbareOrc()
   val barbaresOrc3 = new BarbareOrc()
   val barbaresOrc4 = new BarbareOrc()
+
+  // Set the positions of the mobs
+  val solarPosition = Array(0.0,0.0,0.0)
+  solar.setPosition(solarPosition)
+  val worgsRider1Position = Array(1000.0,1000.0,1000.0)
+  worgsRider1.setPosition(worgsRider1Position)
+  val worgsRider2Position = Array(2000.0,2000.0,0.0)
+  worgsRider2.setPosition(worgsRider2Position)
+  val worgsRider3Position = Array(1500.0,4000.0,0.0)
+  worgsRider3.setPosition(worgsRider3Position)
+  val worgsRider4Position = Array(7000.0,5000.0,0.0)
+  worgsRider4.setPosition(worgsRider4Position)
+  val worgsRider5Position = Array(5000.0,5000.0,0.0)
+  worgsRider5.setPosition(worgsRider5Position)
+  val worgsRider6Position = Array(6000.0,1000.0,0.0)
+  worgsRider6.setPosition(worgsRider6Position)
+  val worgsRider7Position = Array(2000.0,1100.0,0.0)
+  worgsRider7.setPosition(worgsRider7Position)
+  val worgsRider8Position = Array(5000.0,4000.0,0.0)
+  worgsRider8.setPosition(worgsRider8Position)
+  val worgsRider9Position = Array(1000.0,5400.0,0.0)
+  worgsRider9.setPosition(worgsRider9Position)
+  val warLordPosition = Array(4500.0,1000.0,0.0)
+  warLord.setPosition(warLordPosition)
+  val barbaresOrc1Position = Array(1000.0,5000.0,0.0)
+  barbaresOrc1.setPosition(barbaresOrc1Position)
+  val barbaresOrc2Position = Array(1000.0,20000.0,0.0)
+  barbaresOrc2.setPosition(barbaresOrc2Position)
+  val barbaresOrc3Position = Array(1035.0,1005.0,0.0)
+  barbaresOrc3.setPosition(barbaresOrc3Position)
+  val barbaresOrc4Position = Array(3000.0,1500.0,0.0)
+  barbaresOrc4.setPosition(barbaresOrc4Position)
+
+
+  // List of all creatures
+  var allMobs = new ArrayList[Mob]()
+  Collections.addAll(allMobs, solar, worgsRider1, worgsRider2, worgsRider3, worgsRider4, worgsRider5, worgsRider6, worgsRider7, worgsRider8, worgsRider9, warLord, barbaresOrc1, barbaresOrc2, barbaresOrc3, barbaresOrc4)
+  Mob.everyone.addAll(allMobs)
 
   // Creer MobController
   var solarEnemies = new ArrayList[Mob]()
@@ -80,20 +119,20 @@ object main extends App {
 
   // Creating nodes (mobs)
   var myVertices = sc.makeRDD(Array(
-    (1L, new Node(id = 1, position = solar.getPosition, mob = solar)),
-    (2L, new Node(id = 1, position = worgsRider1.getPosition, mob = worgsRider1)),
-    (3L, new Node(id = 1, position = worgsRider2.getPosition, mob = worgsRider2)),
-    (4L, new Node(id = 1, position = worgsRider3.getPosition, mob = worgsRider3)),
-    (5L, new Node(id = 1, position = worgsRider4.getPosition, mob = worgsRider4)),
-    (6L, new Node(id = 1, position = worgsRider5.getPosition, mob = worgsRider5)),
-    (7L, new Node(id = 1, position = worgsRider6.getPosition, mob = worgsRider6)),
-    (8L, new Node(id = 1, position = worgsRider7.getPosition, mob = worgsRider7)),
-    (9L, new Node(id = 1, position = worgsRider8.getPosition, mob = worgsRider8)),
-    (10L, new Node(id = 1, position = warLord.getPosition, mob = warLord)),
-    (11L, new Node(id = 1, position = barbaresOrc1.getPosition, mob = barbaresOrc1)),
-    (12L, new Node(id = 1, position = barbaresOrc2.getPosition, mob = barbaresOrc2)),
-    (13L, new Node(id = 1, position = barbaresOrc3.getPosition, mob = barbaresOrc3)),
-    (14L, new Node(id = 1, position = barbaresOrc4.getPosition, mob = barbaresOrc4))
+    (1L, new Node(id = 1, mob = solar)),
+    (2L, new Node(id = 2, mob = worgsRider1)),
+    (3L, new Node(id = 3, mob = worgsRider2)),
+    (4L, new Node(id = 4, mob = worgsRider3)),
+    (5L, new Node(id = 5, mob = worgsRider4)),
+    (6L, new Node(id = 6, mob = worgsRider5)),
+    (7L, new Node(id = 7, mob = worgsRider6)),
+    (8L, new Node(id = 8, mob = worgsRider7)),
+    (9L, new Node(id = 9, mob = worgsRider8)),
+    (10L, new Node(id = 10, mob = warLord)),
+    (11L, new Node(id = 11, mob = barbaresOrc1)),
+    (12L, new Node(id = 12, mob = barbaresOrc2)),
+    (13L, new Node(id = 13, mob = barbaresOrc3)),
+    (14L, new Node(id = 14, mob = barbaresOrc4))
   ))
 
   // Generate random initial positions for the mobs
@@ -110,7 +149,8 @@ object main extends App {
   ))
 
   var myGraph = Graph(myVertices, myEdges)
-  val algoColoring = new FightGraph()
-  val res = algoColoring.execute(myGraph, 20, sc)
+  val algoColoring = new FightGraph(myGraph)
+  //algoColoring.setMobs(allMobs)
+  val res = algoColoring.execute(myGraph, 2, sc) // 20
   //println("\nNombre de couleurs trouvées: " + algoColoring.getChromaticNumber(res))
 }

@@ -2,25 +2,27 @@ package model.mob;
 
 import model.weapon.Weapon;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
-public abstract class Mob {
+
+public abstract class Mob implements Serializable {
 
     protected String name = "Uknown"; //default value ...
     protected int speed = 15; //default value ...
     protected String type = "Uknown"; //default value ...
     protected int health = 50 ; //default value ...
     protected int armor = 10; //default value ...
-    protected ArrayList<Weapon> weapons;
+    protected ArrayList<Weapon> weapons = new ArrayList<>();
     protected String state = "alive"; //default value ...
     protected boolean canFly=false; //default value ...
     private int team = 0;
     private ArrayList<Mob> enemies = new ArrayList<>();
     private double[] position;
-    private ArrayList<Mob> everyone;
+    public static ArrayList<Mob> everyone = new ArrayList<>();
 
     public Mob(){
-        System.out.println("New mob instancied");
+        //System.out.println("New mob instancied");
     }
 
     public Mob(String name, int health, int armor, ArrayList<Weapon> weapons, String type) {
@@ -31,8 +33,6 @@ public abstract class Mob {
         this.type = type;
     }
 
-
-
     public void takeDamage(int dmg){
         if(dmg>=health) {
             state = "dead";
@@ -42,6 +42,13 @@ public abstract class Mob {
 
     public void attack(Mob ennemy, Weapon weapon){
         weapon.attackMob(ennemy);
+    }
+
+    public boolean canTouchEnemy(Mob enemy)
+    {
+        for (Weapon weapon : weapons) {
+            if(weapon.canTouch(enemy)) return true; }
+        return false;
     }
 
     /*
@@ -58,16 +65,17 @@ public abstract class Mob {
         }
     }*/
 
-    protected String think(Mob enemy){
-        System.out.println("Début du tour de "+ name);
-       // Mob enemy = determineEnemyToAttack();
+    public String think(ArrayList<Mob> enemy){
+        //System.out.println("Début du tour de "+ name);*
+        //System.out.println("Enemy = " + enemy.getName());
+        // Mob enemy = determineEnemyToAttack();
         for(Weapon weapon : weapons) {
-            if (weapon.canTouch(enemy)) {
-                attack(enemy, weapon);
-                return "attaque";
+            if (weapon.canTouch(enemy.get(0))) {
+                //attack(enemy.get(0), weapon);
+                return "attack";
             }
         }
-        move(); //else, move the character
+        //move(); //else, move the character
         return "move";
     }
 
@@ -111,7 +119,7 @@ public abstract class Mob {
     public void setTeam(int team) {this.team = team;}
 
 
-    public void move(){
+    public double[] move(){
         double movedist=10;
         ArrayList<Mob> everyone=this.everyone;
         double[] pos = this.getPosition();
@@ -122,9 +130,9 @@ public abstract class Mob {
         if(pos[2]!= 0) {
             double angle2 = Math.tan(Math.abs(distxy/pos[2]));
             //double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
-            pos[2] = pos[2]-movedist*Math.acos(angle2);
+            pos[2] = pos[2] - movedist * Math.acos(angle2);
             moveground = pos[2] * Math.atan(angle2);
-        }else{
+        } else {
             moveground = distxy;
         }
         pos[1] = (pos[1]/Math.abs(pos[1]))*moveground*Math.acos(angle1);
@@ -139,10 +147,14 @@ public abstract class Mob {
             }
         }
         this.setPosition(pos);
+        return this.position;
+
+        /*position[0] = 777;
+        position[1] = 888;
+        position[2] = 999;
+        return position;*/
 
     }
-
-    //public Mob[] getEnemyList(){}oieeoh
 
     public void generatePos(ArrayList<Mob> everyone){
         double z=0;
