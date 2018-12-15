@@ -33,6 +33,8 @@ public abstract class Mob implements Serializable {
         this.type = type;
     }
 
+
+
     public void takeDamage(int dmg){
         if(dmg>=health) {
             state = "dead";
@@ -125,18 +127,25 @@ public abstract class Mob implements Serializable {
         double[] pos = this.getPosition();
         //this.setPosition(pos);
         double angle1=Math.tan(Math.abs(pos[1]/pos[0]));
+        //distxy : distance au sol
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
-        double moveground ;
+        //moveground : deplacement a faire au sol
+        double moveground = distxy ;
         if(pos[2]!= 0) {
             double angle2 = Math.tan(Math.abs(distxy/pos[2]));
             //double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
             pos[2] = pos[2] - movedist * Math.acos(angle2);
             moveground = pos[2] * Math.atan(angle2);
-        } else {
-            moveground = distxy;
+        //}else{
+         //   moveground = distxy;
         }
-        pos[1] = (pos[1]/Math.abs(pos[1]))*moveground*Math.acos(angle1);
-        pos[0] = (pos[0]/Math.abs(pos[0]))*moveground*Math.asin(angle1);
+        if(pos[1]!=0) {
+            pos[1] = pos[1] - (pos[1] / Math.abs(pos[1])) * moveground * Math.acos(angle1);
+        }
+        if(pos[0]!=0) {
+            pos[0] = pos[0] - (pos[0] / Math.abs(pos[0])) * moveground * Math.asin(angle1);
+        }
+
         if (!isSomeOneThere(pos, everyone)){
             this.setPosition(pos);
         }
