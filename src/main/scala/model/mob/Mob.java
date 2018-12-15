@@ -3,7 +3,7 @@ package model.mob;
 import model.weapon.Weapon;
 
 import java.util.ArrayList;
-
+import java.util.Random;
 public abstract class Mob {
 
     protected String name = "Uknown"; //default value ...
@@ -13,8 +13,11 @@ public abstract class Mob {
     protected int armor = 10; //default value ...
     protected ArrayList<Weapon> weapons;
     protected String state = "alive"; //default value ...
+    protected boolean canFly=false; //default value ...
+    private int team = 0;
     private ArrayList<Mob> enemies = new ArrayList<>();
     private double[] position;
+    private ArrayList<Mob> everyone;
 
     public Mob(){
         System.out.println("New mob instancied");
@@ -27,6 +30,8 @@ public abstract class Mob {
         this.weapons = weapons;
         this.type = type;
     }
+
+
 
     public void takeDamage(int dmg){
         if(dmg>=health) {
@@ -101,10 +106,16 @@ public abstract class Mob {
     public void setEnemies(ArrayList<Mob> enemies){this.enemies = enemies;}
 
     abstract public boolean haveToMove();
+
+    public int getTeam() {return team;}
+    public void setTeam(int team) {this.team = team;}
+
+
     public void move(){
         double movedist=10;
+        ArrayList<Mob> everyone=this.everyone;
         double[] pos = this.getPosition();
-        this.setPosition(pos);
+        //this.setPosition(pos);
         double angle1=Math.tan(Math.abs(pos[1]/pos[0]));
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
         double moveground ;
@@ -118,8 +129,64 @@ public abstract class Mob {
         }
         pos[1] = (pos[1]/Math.abs(pos[1]))*moveground*Math.acos(angle1);
         pos[0] = (pos[0]/Math.abs(pos[0]))*moveground*Math.asin(angle1);
+        if (!isSomeOneThere(pos, everyone)){
+            this.setPosition(pos);
+        }
+        else{
+            pos[0]=pos[0]+1;
+            if (!isSomeOneThere(pos, everyone)){
+                this.setPosition(pos);
+            }
+        }
         this.setPosition(pos);
 
-    //public Mob[] getEnemyList(){}
+    }
+
+    //public Mob[] getEnemyList(){}oieeoh
+
+    public void generatePos(ArrayList<Mob> everyone){
+        double z=0;
+
+
+        if (this.canFly) {
+            double minZ = 0;
+            double maxZ = 50;
+            z = Math.random() * maxZ + minZ;
+        }
+        double minX=2;
+        double maxX=50;
+
+        double minY=-50;
+        double maxY=50;
+
+        boolean positionUnAble = true;
+        while(positionUnAble){
+
+            double x=Math.random() * maxX + minX;
+            double y=Math.random() * (maxY-minY) + minY;
+            double[] pos={x,y,z};
+            if (!isSomeOneThere(pos, everyone)){
+                this.setPosition(pos);
+                positionUnAble = false;
+            }
+        }
+
+    }
+
+    public boolean isSomeOneThere(double[] pos, ArrayList<Mob> everyone){
+        int distMin=1;
+        for(Mob mob : everyone) {
+            double[] othermob = mob.getPosition();
+            double[] me = this.getPosition();
+            double distX=me[0]-othermob[0];
+            double distY=me[1]-othermob[1];
+            double distZ=me[2]-othermob[2];
+            if(distX*distX + distY*distY + distZ*distZ== distMin*distMin){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
