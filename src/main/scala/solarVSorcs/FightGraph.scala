@@ -1,4 +1,4 @@
-package fc2
+package solarVSorcs
 
 import java.util.ArrayList
 
@@ -16,15 +16,15 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
     * @param ctx
     */
   def sendPositionMessages(ctx: EdgeContext[Node, String, Array[Mob]]): Unit = {
-    // Envoi de messages si les monstres expéditeur et destinataire sont vivants
+    // Send messages if source and destination mobs are alive
     if (!ctx.srcAttr.mob.isDead && !ctx.dstAttr.mob.isDead)
       {
-        // On crée un array pour pouvoir stocker la liste des ennemis du mob
-        // (Cette liste sera donc agrandie dans le mergePositionMessages)
+        // Create an array to store the list of this mob's enemies
+        // (This list will grown in the mergePositionMessages function)
         var array1 = Array(ctx.srcAttr.mob)
         var array2 = Array(ctx.dstAttr.mob)
 
-        // Envoi des messages
+        // Send the messages
         ctx.sendToDst(array1)
         ctx.sendToSrc(array2)
       }
@@ -39,7 +39,7 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
     * @return
     */
   def mergePositionMessages(mob1: Array[Mob], mob2: Array[Mob]): Array[Mob] = {
-    // Comparer les positions pour déterminer lequel est le plus proche
+    // Merge arrays to finally obtain a full list of the mob's enemies
     var array = Array(mob1, mob2).flatten
     array
   }
@@ -88,14 +88,13 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
   }
 
 
+  /////////// TODO for attacks ///////////
 
-  // Chaque noeud envoie à tous ses voisins, un Array contenant sa position et sa distance par rapport à son ennemi
   def sendAttackMessages(ctx: EdgeContext[Node, String, Array[Mob]]): Unit = {
     // TODO
   }
 
-  // On choisit l'adversaire le plus proche
-  // TODO: Plutôt garder tous les mobs assez proches, plutôt que seulement le plus proche?
+
   def mergeAttackMessages(mob1: Array[Mob], mob2: Array[Mob]): Array[Mob] = {
     // TODO
     null
@@ -107,6 +106,8 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
     // TODO
     null
   }
+
+  /////////// END TODO for attacks ///////////
 
 
   /**

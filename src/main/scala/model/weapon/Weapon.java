@@ -34,12 +34,12 @@ public abstract class Weapon implements Serializable  {
     }
 
     public boolean canTouch(Mob enemy){
-        /*double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
+        double x = Math.abs(this.weaponOwner.getPosition()[0] - enemy.getPosition()[0]);
         double y = Math.abs(this.weaponOwner.getPosition()[1] - enemy.getPosition()[1]);
         double z = Math.abs(this.weaponOwner.getPosition()[2] - enemy.getPosition()[2]);
         double distXY=Math.sqrt(x*x + y*y);
         double dist=Math.sqrt(distXY*distXY+z*z);
-        return dist<this.distAttack;*/ return false;
+        return dist<this.distAttack;
     }
 
     public void attackMob(Mob enemy){

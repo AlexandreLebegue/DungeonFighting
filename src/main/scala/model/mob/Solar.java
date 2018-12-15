@@ -14,19 +14,6 @@ public class Solar extends Mob {
         this.armor = 44;
         this.weapons.add(new GreatSword(this));
         this.weapons.add(new LongBow(this));
-        System.out.println("Constructor called!");
-    }
-
-    @Override
-    public Object clone()
-    {
-        System.out.println("CLONED");
-        try {
-
-            return super.clone();
-        }
-        catch(CloneNotSupportedException e) { e.printStackTrace(); return null; }
-
     }
 
     public boolean haveToMove(){
