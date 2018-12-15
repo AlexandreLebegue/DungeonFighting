@@ -111,7 +111,7 @@ public abstract class Mob {
         double movedist=10;
         ArrayList<Mob> everyone=this.everyone;
         double[] pos = this.getPosition();
-        this.setPosition(pos);
+        //this.setPosition(pos);
         double angle1=Math.tan(Math.abs(pos[1]/pos[0]));
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
         double moveground ;
@@ -134,8 +134,10 @@ public abstract class Mob {
                 this.setPosition(pos);
             }
         }
+        this.setPosition(pos);
 
     }
+
 
     //public Mob[] getEnemyList(){}oieeoh
 
@@ -153,7 +155,7 @@ public abstract class Mob {
 
         double minY=-50;
         double maxY=50;
-        
+
         boolean positionUnAble = true;
         while(positionUnAble){
 
