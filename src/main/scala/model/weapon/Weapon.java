@@ -8,12 +8,14 @@ import java.util.HashMap;
 
 public abstract class Weapon {
 
+    private static int CRITIQUE = 20;
+
     protected String name;
     protected ArrayList<Integer> precision;
     protected int damage;
     protected int range = 10;
     protected HashMap<String, Integer>  specialAbility;
-    private Dice d20 = new Dice(20);
+    private Dice d20 = new Dice(CRITIQUE);
     private Mob weaponOwner;
     private double distAttack;
 
@@ -42,8 +44,10 @@ public abstract class Weapon {
 
     public void attackMob(Mob enemy){
         for(int i=0; i<precision.size(); i++){
-            int roll = (precision.get(i) + d20.getAThrow());
-            if(roll > enemy.getArmor()) {
+            int dice = d20.getAThrow();
+
+            int roll = (precision.get(i) + dice);
+            if((roll > enemy.getArmor()) || (roll == CRITIQUE)) {
                 int damage = calculDamage();
                 enemy.takeDamage(damage);
                 System.out.println("Hit : " + damage);
