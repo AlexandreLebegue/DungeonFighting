@@ -5,9 +5,9 @@ import model.weapon.LongBow;
 
 import java.io.Serializable;
 
-public class RedCreatWyrmDragon extends Mob implements Serializable {
-    public RedCreatWyrmDragon(){
-        this.name = "RedCreatWyrmDragon";
+public class RedGreatWyrmDragon extends Mob implements Serializable {
+    public RedGreatWyrmDragon(){
+        this.name = "RedGreatWyrmDragon";
         this.health = 391;
         this.armor = 37;
         //this.weapons.add(new GreatSword(this));
