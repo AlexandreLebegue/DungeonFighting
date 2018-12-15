@@ -14,6 +14,7 @@ public abstract class Mob {
     protected ArrayList<Weapon> weapons;
     protected String state = "alive"; //default value ...
     protected boolean canFly=false; //default value ...
+    private int team = 0;
     private ArrayList<Mob> enemies = new ArrayList<>();
     private double[] position;
     private ArrayList<Mob> everyone;
@@ -105,6 +106,9 @@ public abstract class Mob {
     public void setEnemies(ArrayList<Mob> enemies){this.enemies = enemies;}
 
     abstract public boolean haveToMove();
+
+    public int getTeam() {return team;}
+    public void setTeam(int team) {this.team = team;}
 
 
     public void move(){
