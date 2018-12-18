@@ -116,7 +116,8 @@ public abstract class Mob {
         ArrayList<Mob> everyone=this.everyone;
         double[] pos = this.getPosition();
         //this.setPosition(pos);
-        double angle1=Math.tan(Math.abs(pos[1]/pos[0]));
+
+
         //distxy : distance au sol
         double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
         //moveground : deplacement a faire au sol
@@ -129,10 +130,12 @@ public abstract class Mob {
         //}else{
          //   moveground = distxy;
         }
-        if(pos[1]!=0) {
+        if(pos[1]!=0 & pos[0]!=0) {// changer ça
+            double angle1 = Math.tan(Math.abs(pos[1] / pos[0]));
             pos[1] = pos[1] - (pos[1] / Math.abs(pos[1])) * moveground * Math.acos(angle1);
         }
         if(pos[0]!=0) {
+            double angle1 = Math.tan(Math.abs(pos[1] / pos[0]));
             pos[0] = pos[0] - (pos[0] / Math.abs(pos[0])) * moveground * Math.asin(angle1);
         }
 
@@ -140,17 +143,18 @@ public abstract class Mob {
             this.setPosition(pos);
         }
         else{
-            pos[0]=pos[0]+1;
-            if (!isSomeOneThere(pos, everyone)){
-                this.setPosition(pos);
+            for(int i =0; i<movedist; i++) {
+                pos[0] = pos[0] + i;
+                if (!isSomeOneThere(pos, everyone)) {
+                    this.setPosition(pos);
+                }
             }
         }
-        this.setPosition(pos);// a virer
-
+        this.setPosition(pos); // a virer
     }
 
 
-    //public Mob[] getEnemyList(){}oieeoh
+    //public Mob[] getEnemyList(){} oieeoh
 
     public void generatePos(ArrayList<Mob> everyone){
         double z=0;
