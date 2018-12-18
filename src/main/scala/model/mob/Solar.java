@@ -4,6 +4,8 @@ import model.weapon.GreatSword;
 import model.weapon.LongBow;
 import model.weapon.Weapon;
 
+import java.util.ArrayList;
+
 public class Solar extends Mob {
 
     public Solar(){
@@ -14,27 +16,26 @@ public class Solar extends Mob {
         this.weapons.add(new LongBow(this));
     }
 
-
     public boolean haveToMove(){
         return false;
     }
 
 
     @Override
-    protected String think(Mob enemy) {
-        System.out.println("Début du tour de "+ name);
+    public String think(ArrayList<Mob> enemy) {
+        //System.out.println("Début du tour de "+ name);
         // Mob enemy = determineEnemyToAttack();
         if(this.health <= (363/10)){
             heal(this);
         }
 
         for(Weapon weapon : weapons) {
-            if (weapon.canTouch(enemy)) {
-                attack(enemy, weapon);
-                return "attaque";
+            if (weapon.canTouch(enemy.get(0))) {
+                //attack(enemy.get(0), weapon);
+                return "attack";
             }
         }
-        move(); //else, move the character
+        //move(); //else, move the character
         return "move";
 
     }

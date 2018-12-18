@@ -3,10 +3,11 @@ package model.weapon;
 import model.Dice;
 import model.mob.Mob;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Weapon {
+public abstract class Weapon implements Serializable  {
 
     private static int CRITIQUE = 20;
 
@@ -39,7 +40,6 @@ public abstract class Weapon {
         double distXY=Math.sqrt(x*x + y*y);
         double dist=Math.sqrt(distXY*distXY+z*z);
         return dist<this.distAttack;
-
     }
 
     public void attackMob(Mob enemy){

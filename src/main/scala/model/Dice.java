@@ -1,6 +1,8 @@
 package model;
 
-public class Dice {
+import java.io.Serializable;
+
+public class Dice implements Serializable {
 
 
     private int size;
