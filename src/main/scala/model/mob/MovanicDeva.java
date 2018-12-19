@@ -9,6 +9,8 @@ public class MovanicDeva extends Mob{
         this.health = 126;
         this.armor = 24;
         this.weapons.add(new GreatSword(this));
+        this.canFly = true;
+        this.speed = 40;
     }
 
 

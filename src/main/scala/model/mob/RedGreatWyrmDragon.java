@@ -10,6 +10,8 @@ public class RedGreatWyrmDragon extends Mob implements Serializable {
         this.name = "RedGreatWyrmDragon";
         this.health = 391;
         this.armor = 37;
+        this.canFly = true;
+        this.speed = 40;
         //this.weapons.add(new GreatSword(this));
         //this.weapons.add(new LongBow(this));
         //bite and tail sweep

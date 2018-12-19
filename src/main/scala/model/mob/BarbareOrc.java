@@ -10,6 +10,7 @@ public class BarbareOrc extends Mob {
         this.armor = 17;
         this.weapons.add(new DoubleAxe(this));
         this.weapons.add(new LongBow(this));
+        this.speed = 40;
     }
 
 

@@ -11,6 +11,7 @@ public class WarLord extends Mob {
         this.armor = 27;
         //this.weapons.add(new GreatSword()); //Add fist competence ?
         this.weapons.add(new ThrowingAxe(this));
+        this.speed = 30;
     }
 
     public boolean haveToMove(){

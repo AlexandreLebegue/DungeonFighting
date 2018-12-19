@@ -11,6 +11,7 @@ public class WorgRider extends Mob {
         this.armor = 18;
         this.weapons.add(new BattleAxe(this));
         this.weapons.add(new ShortBow(this));
+        this.speed = 20;
     }
 
     public boolean haveToMove(){

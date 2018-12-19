@@ -33,7 +33,7 @@ object main extends App {
   val barbaresOrc4 = new BarbareOrc()
 
   // Set the positions of the mobs
-  val solarPosition = Array(0.0,0.0,0.0)
+  val solarPosition = Array(0.0,0.0,50.0)
   solar.setPosition(solarPosition)
   val worgsRider1Position = Array(1000.0,1000.0,1000.0)
   worgsRider1.setPosition(worgsRider1Position)

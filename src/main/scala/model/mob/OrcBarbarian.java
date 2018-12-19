@@ -17,6 +17,7 @@ public class OrcBarbarian extends Mob {
         this.armor = 15;
         this.weapons.add(new GreatAxe(this));
         this.weapons.add(new ThrowingAxe(this));
+        this.speed = 30;
     }
 
     public boolean haveToMove(){

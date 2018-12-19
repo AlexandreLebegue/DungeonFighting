@@ -10,6 +10,8 @@ public class Planetar extends Mob{
         this.health = 229;
         this.armor = 32;
         this.weapons.add(new GreatSword(this));
+        this.canFly = true;
+        this.speed = 30;
     }
 
     public boolean haveToMove(){

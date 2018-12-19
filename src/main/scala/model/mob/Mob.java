@@ -92,6 +92,21 @@ public abstract class Mob implements Serializable {
         return currentEnemy;
     }
 
+    private Mob determineEnemyToComeCloser(){
+        int lowestDistance = Integer.MAX_VALUE;
+        Mob closestEnemy = null;
+        for(Mob enemy : enemies) {
+            if(enemy.isDead()) continue;
+            // Compute the distance between the two mobs
+            double dx = enemy.position[0] - this.position[0];
+            double dy = enemy.position[1] - this.position[1];
+            double dz = enemy.position[2] - this.position[2];
+            double distance = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            if(distance < lowestDistance){closestEnemy = enemy; }
+        }
+        return closestEnemy;
+    }
+
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
 
@@ -121,53 +136,34 @@ public abstract class Mob implements Serializable {
     public void setTeam(int team) {this.team = team;}
 
 
-    public double[] move(){
-        double movedist=10;
-        ArrayList<Mob> everyone=this.everyone;
-        double[] pos = this.getPosition();
-        //this.setPosition(pos);
+    /**
+     * Moves the mob depending on the enemy to approach
+     * TODO Gérer cas où deux mobs sont pile poil à la même position (mais vu qu'on est sur des doubles, c'est rarissime, donc à voir à la fin)
+     * @return The new position of the current mob
+     */
+    public double[] move()
+    {
+        // Choose the enemy to move closer to
+        Mob enemy = determineEnemyToComeCloser();
 
+        // Compute the movement vector
+        double x = enemy.position[0] - this.position[0];
+        double y = enemy.position[1] - this.position[1];
+        double z = enemy.position[2] - this.position[2];
+        double norm = Math.sqrt(x*x + y*y + z*z);
+        double[] movement = { this.speed*x/norm , this.speed*y/norm , this.speed*z/norm };
 
-        //distxy : distance au sol
-        double distxy = Math.sqrt(pos[1]*pos[1]+pos[0]*pos[0]);
-        //moveground : deplacement a faire au sol
-        double moveground = distxy ;
-        if(pos[2]!= 0) {
-            double angle2 = Math.tan(Math.abs(distxy/pos[2]));
-            //double distTot = Math.sqrt(distxy*distxy + pos[2]*pos[2]);
-            pos[2] = pos[2] - movedist * Math.acos(angle2);
-            moveground = pos[2] * Math.atan(angle2);
-        //}else{
-         //   moveground = distxy;
-        }
-        if(pos[1]!=0 & pos[0]!=0) {// changer ça
-            double angle1 = Math.tan(Math.abs(pos[1] / pos[0]));
-            pos[1] = pos[1] - (pos[1] / Math.abs(pos[1])) * moveground * Math.acos(angle1);
-        }
-        if(pos[0]!=0) {
-            double angle1 = Math.tan(Math.abs(pos[1] / pos[0]));
-            pos[0] = pos[0] - (pos[0] / Math.abs(pos[0])) * moveground * Math.asin(angle1);
-        }
+        double newX = this.position[0] + movement[0];
+        double newY = this.position[1] + movement[1];
+        double newZ;
+        if(canFly)
+            newZ = this.position[2] + movement[2];
+        else
+            newZ = 0;
+        double[] newPosition = { newX , newY , newZ };
 
-        if (!isSomeOneThere(pos, everyone)){
-            this.setPosition(pos);
-        }
-        else{
-            for(int i =0; i<movedist; i++) {
-                pos[0] = pos[0] + i;
-                if (!isSomeOneThere(pos, everyone)) {
-                    this.setPosition(pos);
-                }
-            }
-        }
-        this.setPosition(pos);
-        return this.position;
-
-        /*position[0] = 777;
-        position[1] = 888;
-        position[2] = 999;
-        return position;*/
-
+        this.setPosition(newPosition);
+        return newPosition;
     }
 
     public void generatePos(ArrayList<Mob> everyone){

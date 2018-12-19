@@ -11,7 +11,7 @@ public class AngelSlayer extends Mob{
         this.armor = 26;
         this.weapons.add(new LongBow(this));
         this.weapons.add(new DoubleAxe(this));
-
+        this.speed = 40;
     }
 
 

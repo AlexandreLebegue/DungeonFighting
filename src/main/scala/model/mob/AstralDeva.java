@@ -10,6 +10,8 @@ public class AstralDeva extends Mob{
         this.health = 172;
         this.armor = 29;
         this.weapons.add(new Warhammer(this));
+        this.canFly = true;
+        this.speed = 50;
         //warhammer
     }
 

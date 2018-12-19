@@ -14,6 +14,8 @@ public class Solar extends Mob {
         this.armor = 44;
         this.weapons.add(new GreatSword(this));
         this.weapons.add(new LongBow(this));
+        this.canFly = true;
+        this.speed = 50;
     }
 
     public boolean haveToMove(){

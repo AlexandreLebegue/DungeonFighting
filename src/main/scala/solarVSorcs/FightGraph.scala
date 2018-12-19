@@ -65,6 +65,7 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
 
     if (chosenAction == "move")
       {
+        // Move to the closest enemy
         sommet.mob.move()
       }
     else if (chosenAction == "attack")
@@ -145,11 +146,11 @@ class FightGraph(graph: Graph[Node,String]) extends Serializable
         myGraph = myGraph.joinVertices(messages)(
           (vid, sommet, bestTarget) => doAction(vid, sommet, bestTarget))
 
-        var printedGraph = myGraph.vertices.collect()
+        /*var printedGraph = myGraph.vertices.collect()
         printedGraph = printedGraph.sortBy(_._1)
         printedGraph.foreach(
           elem => println(elem._2)
-        )
+        )*/
       }
 
     }
