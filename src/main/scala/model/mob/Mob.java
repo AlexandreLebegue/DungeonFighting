@@ -3,174 +3,221 @@ package model.mob;
 import model.weapon.Weapon;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
-public abstract class Mob implements Serializable {
-
-    protected String name = "Uknown"; //default value ...
-    protected int speed = 15; //default value ...
-    protected String type = "Uknown"; //default value ...
-    protected int health = 50 ; //default value ...
-    protected int armor = 10; //default value ...
+/**
+ * This class represents a creature
+ */
+public abstract class Mob implements Serializable
+{
+    // Here are some attributes defining a Mob ; some of them have default values
+    protected int id;
+    protected String name;
+    protected int team;
+    protected int speed = 15;
+    protected int health = 50;
+    protected int armor = 10;
     protected ArrayList<Weapon> weapons = new ArrayList<>();
-    protected String state = "alive"; //default value ...
-    protected boolean canFly=false; //default value ...
-    private int team = 0;
-    private ArrayList<Mob> enemies = new ArrayList<>();
+    protected boolean canFly = false;
+    protected boolean canHeal = false;
+    protected int attacksPerRound = 1;
     private double[] position;
-    public static ArrayList<Mob> everyone = new ArrayList<>();
 
-    public Mob(){
-        //System.out.println("New mob instancied");
-    }
 
-    public Mob(String name, int health, int armor, ArrayList<Weapon> weapons, String type) {
+    public Mob() {}
+
+    public Mob(String name, int health, int armor, ArrayList<Weapon> weapons, String type)
+    {
         this.name = name;
         this.health = health;
         this.armor = armor;
         this.weapons = weapons;
-        this.type = type;
     }
 
 
+    // TODO Implement healing methods
 
-    public void takeDamage(int dmg){
-        if(dmg>=health) {
-            state = "dead";
-            health = 0;
-        }else health -= dmg;
-    }
 
-    public void attack(Mob ennemy, Weapon weapon){
-        weapon.attackMob(ennemy);
-    }
-
-    public boolean canTouchEnemy(Mob enemy)
+    /**
+     * Represents the artificial intelligence of the mobs
+     * This AI is quite simple: it chooses the action depending on priorities:
+     * - if a member of the team needs healing, then "heal" is the chosen action
+     * - else, if an enemy mob can be attacked, then "attack" is the chosen action
+     * - else, "move" is the chosen action, to get closer to the enemies
+     * @param allMobs ArrayList of all mobs of the fight
+     * @return String representing the action to do: "move", "attack", or "heal"
+     */
+    public String think(ArrayList<Mob> allMobs)
     {
-        for (Weapon weapon : weapons) {
-            if(weapon.canTouch(enemy)) return true; }
-        return false;
-    }
+        // TODO: Implement healing in the mob classes that can do it --> return "heal"
 
-    /*
-    public void action(Mob[] enemyList){
-        //Mob[] enemyList = getEnemyList();
-        for(Mob enemy : enemyList) {
-            if (this.getWeapons().get(0).canTouch(enemy)) {
-                this.getWeapons().get(0).attackMob(enemy);
-            } else if ( this.getWeapons().get(0).canTouch(enemy)){
-                this.getWeapons().get(1).attackMob(enemy);
-            }else if(this.haveToMove()){
-                this.move();
+        List<Mob> enemies = determineEnemiesToAttack(allMobs);
+        for(Mob enemy : enemies)
+        {
+            for(Weapon weapon : weapons) {
+                if (weapon.canTouch(enemy)) return "attack";
             }
         }
-    }*/
 
-    public String think(ArrayList<Mob> enemy){
-        //System.out.println("Début du tour de "+ name);*
-        //System.out.println("Enemy = " + enemy.getName());
-        // Mob enemy = determineEnemyToAttack();
-        for(Weapon weapon : weapons) {
-            if (weapon.canTouch(enemy.get(0))) {
-                //attack(enemy.get(0), weapon);
-                return "attack";
-            }
-        }
-        //move(); //else, move the character
         return "move";
     }
 
 
-    private Mob determineEnemyToAttack(){
-        int lowestLife = Integer.MAX_VALUE;
-        Mob currentEnemy = null;
-        for(Mob enemy : enemies) {
-            if(enemy.isDead()) continue;
-            if(enemy.getHealth() < lowestLife){currentEnemy = enemy; }
+    /**
+     * Determines the enemies that this mob can currently attack
+     * The creature always chooses to attack the creatures with the lowest health level
+     * @param allMobs The list of all mobs of the fight
+     * @return A List of the mobs that this creature can attack
+     */
+    public List<Mob> determineEnemiesToAttack(ArrayList<Mob> allMobs)
+    {
+        // To achieve that, we order the enemies by health level from the lowest to the highest
+        // Then we send the best ones, with a maximum of [attacksPerRound] values
+
+        ArrayList<Mob> aliveEnemies = new ArrayList<>();
+        for(Mob enemy : allMobs)
+        {
+            if(enemy.getTeam() != this.team && !enemy.isDead() && canTouchEnemy(enemy)) aliveEnemies.add(enemy);
         }
-        return currentEnemy;
+        aliveEnemies.sort(new MobHealthComparator());
+
+        if(aliveEnemies.size() > attacksPerRound)
+            return aliveEnemies.subList(0, attacksPerRound);
+        else
+            return aliveEnemies;
     }
 
-    private Mob determineEnemyToComeCloser(){
+
+    /**
+     * Determines the enemy towards which the creature should move
+     * @param allMobs The list of all mobs of the fight
+     * @return The closest mob
+     */
+    private Mob determineEnemyToComeCloser(ArrayList<Mob> allMobs){
         int lowestDistance = Integer.MAX_VALUE;
         Mob closestEnemy = null;
-        for(Mob enemy : enemies) {
-            if(enemy.isDead()) continue;
+        for(Mob enemy : allMobs) {
+            if(enemy.getTeam() == this.team || enemy.isDead()) continue;
             // Compute the distance between the two mobs
             double dx = enemy.position[0] - this.position[0];
             double dy = enemy.position[1] - this.position[1];
             double dz = enemy.position[2] - this.position[2];
             double distance = Math.sqrt(dx*dx + dy*dy + dz*dz);
-            if(distance < lowestDistance){closestEnemy = enemy; }
+            if(distance < lowestDistance){ closestEnemy = enemy; }
         }
         return closestEnemy;
     }
 
-    public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
 
-    public boolean isDead(){return state.equals("dead");}
-
-    public int getHealth() {return health;}
-    public void setHealth(int health) {this.health = health;}
-
-    public int getArmor() {return armor;}
-    public void setArmor(int armor) {this.armor = armor;}
-
-    public String getType() {return type;}
-    public void setType(String type) {this.type = type;}
-
-    public ArrayList<Weapon> getWeapons() {return weapons;}
-    public void setWeapons(ArrayList<Weapon> weapons) {this.weapons = weapons;}
-    public void addWeapon(Weapon weapon){weapons.add(weapon);}
-
-    public double[] getPosition() {return position;}
-    public void setPosition(double[] position) {this.position = position;}
-
-    public void setEnemies(ArrayList<Mob> enemies){this.enemies = enemies;}
-
-    abstract public boolean haveToMove();
-
-    public int getTeam() {return team;}
-    public void setTeam(int team) {this.team = team;}
+    /**
+     * Determines the weapon to use to attack an enemy
+     * @param mobToAttack The enemy to attack
+     * @return The weapon to use for this attack
+     */
+    public Weapon determineWeaponToUse(Mob mobToAttack)
+    {
+        Weapon mostEfficientWeapon = weapons.get(0);
+        for(int i=1; i<weapons.size(); i++)
+        {
+            Weapon weapon = weapons.get(i);
+            if(weapon.canTouch(mobToAttack) && weapon.getDamage() > mostEfficientWeapon.getDamage())
+                mostEfficientWeapon = weapon;
+        }
+        return mostEfficientWeapon;
+    }
 
 
     /**
-     * Moves the mob depending on the enemy to approach
-     * TODO Gérer cas où deux mobs sont pile poil à la même position (mais vu qu'on est sur des doubles, c'est rarissime, donc à voir à la fin)
-     * @return The new position of the current mob
+     * @param enemy The enemy to attack
+     * @return true if the creature can touch the enemy, else false
      */
-    public double[] move()
+    private boolean canTouchEnemy(Mob enemy)
     {
-        // Choose the enemy to move closer to
-        Mob enemy = determineEnemyToComeCloser();
-
-        // Compute the movement vector
-        double x = enemy.position[0] - this.position[0];
-        double y = enemy.position[1] - this.position[1];
-        double z = enemy.position[2] - this.position[2];
-        double norm = Math.sqrt(x*x + y*y + z*z);
-        double[] movement = { this.speed*x/norm , this.speed*y/norm , this.speed*z/norm };
-
-        double newX = this.position[0] + movement[0];
-        double newY = this.position[1] + movement[1];
-        double newZ;
-        if(canFly)
-            newZ = this.position[2] + movement[2];
-        else
-            newZ = 0;
-        double[] newPosition = { newX , newY , newZ };
-
-        this.setPosition(newPosition);
-        return newPosition;
+        for (Weapon weapon : weapons)
+        {
+            if(weapon.canTouch(enemy)) return true;
+        }
+        return false;
     }
 
-    public void generatePos(ArrayList<Mob> everyone){
+
+    /**
+     * Gets the move to perform depending on the enemy to approach
+     * @return The new position of the current mob
+     */
+    public double[] getMoveToPerform(ArrayList<Mob> allMobs)
+    {
+        Mob enemy = determineEnemyToComeCloser(allMobs); // Choose the enemy to move closer to
+
+        double deltaX = enemy.position[0] - this.position[0];
+        double deltaY = enemy.position[1] - this.position[1];
+        double deltaZ = enemy.position[2] - this.position[2];
+        double goalDistance = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
+        if(goalDistance > speed) // The enemy is too far
+        {
+            double ratio = speed / goalDistance;
+            double xMove = ratio * deltaX;
+            double yMove = ratio * deltaY;
+            double zMove = ratio * deltaZ;
+            double newX = this.position[0] + xMove;
+            double newY = this.position[1] + yMove;
+            double newZ = 0.0;
+            if(canFly) newZ = this.position[2] + zMove;
+            return new double[] { newX, newY, newZ };
+        }
+        else // The enemy can be reached in one move
+        {
+            // The following test avoids us to return the enemy Z position (which could be different from 0)
+            // if the current mob cannot fly
+            // But in both cases, we will decrease x and y positions of the enemy by 1, to avoid collisions between the two
+            if(canFly)
+                return new double[] { enemy.position[0] - 1, enemy.position[1] - 1, enemy.position[2] };
+            else
+                return new double[] { enemy.position[0] - 1, enemy.position[1] - 1, 0 };
+        }
+    }
+
+
+    /**
+     * Performs a move by updating the position of the mob
+     * @param newPosition The new position of the mob
+     */
+    public void move(double[] newPosition) { this.setPosition(newPosition); }
+
+
+    /**
+     * Gets the damage to give to the enemy for an attack
+     * @param enemy The enemy to attack
+     * @param weapon The weapon to use for the attack
+     * @return Damage
+     */
+    public int getDamageForAttack(Mob enemy, Weapon weapon)
+    {
+        return weapon.attackMob(enemy);
+    }
+
+
+    /**
+     * Performs an attack by updating the health of the mob with the damage it should receive
+     * @param damage The damage to receive by this mob
+     */
+    public void takeDamage(int damage)
+    {
+        if(damage >= health) health = 0;
+        else health -= damage;
+    }
+
+
+    /**
+     * Generates initial random positions for the mobs of a fight
+     * @param everyone The list of all mobs of the fight
+     */
+    public void generatePosition(ArrayList<Mob> everyone)
+    {
         double z=0;
 
-
-        if (this.canFly) {
+        if (this.canFly)
+        {
             double minZ = 0;
             double maxZ = 50;
             z = Math.random() * maxZ + minZ;
@@ -195,7 +242,13 @@ public abstract class Mob implements Serializable {
 
     }
 
-    public boolean isSomeOneThere(double[] pos, ArrayList<Mob> everyone){
+
+    /**
+     * @param pos Position
+     * @param everyone List of all mobs of the fight which already have a position
+     * @return true if a mob is already present at this position, else false
+     */
+    private boolean isSomeOneThere(double[] pos, ArrayList<Mob> everyone){
         int distMin=1;
         for(Mob mob : everyone) {
             double[] othermob = mob.getPosition();
@@ -210,5 +263,62 @@ public abstract class Mob implements Serializable {
         return false;
     }
 
+
+    ////////// Getters, setters, toString & equals methods //////////
+
+
+    public int getId() { return id; }
+
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+
+    public int getHealth() {return health;}
+    public void setHealth(int health) {this.health = health;}
+    public boolean isDead(){ return health <= 0; }
+
+    public int getArmor() {return armor;}
+    public void setArmor(int armor) {this.armor = armor;}
+
+    public ArrayList<Weapon> getWeapons() {return weapons;}
+    public void setWeapons(ArrayList<Weapon> weapons) {this.weapons = weapons;}
+
+    public double[] getPosition() {return position;}
+    public void setPosition(double[] position) {this.position = position;}
+
+    public int getTeam() {return team;}
+    public void setTeam(int team) {this.team = team;}
+
+    @Override
+    public String toString()
+    {
+        return "[" + this.id + "] " + this.name + " : " + this.health + " - ("
+                + this.position[0] + " ; " + this.position[1] + " ; " + this.position[2] + ")";
+    }
+
+    @Override
+    public boolean equals(Object mobToCompare)
+    {
+        Mob mob = (Mob)mobToCompare;
+        return mob.name.equals(this.name) && mob.health == this.health && mob.team == this.team && mob.position[0] == this.position[0]
+                && mob.position[1] == this.position[1] && mob.position[2] == this.position[2];
+        // No need to compare every attribute, just the main ones
+    }
+
+
+
+    /**
+     * This inner class is used to order a list of mobs from the lowest health to the highest health
+     */
+    class MobHealthComparator implements Comparator<Mob>
+    {
+        @Override
+        public int compare(Mob m1, Mob m2) {
+            if(m1.getHealth() > m2.getHealth()){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
 
 }

@@ -2,11 +2,9 @@ package model.weapon;
 
 import model.Dice;
 import model.mob.Mob;
-import model.mob.WorgRider;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class BattleAxe extends Weapon{
 
@@ -23,7 +21,7 @@ public class BattleAxe extends Weapon{
     }
 
     @Override
-    protected int calculDamage(){
+    protected int computeDamage(){
         return (d8.getAThrow()+2) * 3;
     }
 

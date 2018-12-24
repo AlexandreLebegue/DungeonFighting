@@ -13,14 +13,14 @@ public class Warhammer extends Weapon {
     public Warhammer(Mob mob) {
         super(mob);
         name = "Warhammer";
-        precision = new ArrayList<Integer>();
+        precision = new ArrayList<>();
         Collections.addAll(precision, 26,21,16);
         damage = 14;
         range  = 10;
     }
 
     @Override
-    protected int calculDamage(){
+    protected int computeDamage(){
         return d8.getAThrow()+ damage;
     }
 }

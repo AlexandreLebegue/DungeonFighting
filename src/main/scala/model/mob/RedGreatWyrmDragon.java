@@ -1,27 +1,21 @@
 package model.mob;
 
-import model.weapon.GreatSword;
-import model.weapon.LongBow;
+import model.weapon.Bite;
+import model.weapon.TailSweep;
 
 import java.io.Serializable;
 
 public class RedGreatWyrmDragon extends Mob implements Serializable {
-    public RedGreatWyrmDragon(){
+    public RedGreatWyrmDragon(int id){
+        this.id = id;
         this.name = "RedGreatWyrmDragon";
-        this.health = 391;
-        this.armor = 37;
+        this.team = 0;
+        this.health = 449;
+        this.armor = 39;
         this.canFly = true;
         this.speed = 40;
-        //this.weapons.add(new GreatSword(this));
-        //this.weapons.add(new LongBow(this));
-        //bite and tail sweep
+        this.weapons.add(new Bite(this));
+        this.weapons.add(new TailSweep(this));
     }
-
-
-    public boolean haveToMove(){
-        return false;
-    }
-
-
 
 }

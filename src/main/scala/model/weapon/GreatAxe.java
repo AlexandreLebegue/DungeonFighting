@@ -14,7 +14,7 @@ public class GreatAxe extends Weapon {
     public GreatAxe(Mob mob){
         super(mob);
         name = "GreatAxe";
-        precision = new ArrayList<Integer>();
+        precision = new ArrayList<>();
         Collections.addAll(precision, 11);
         damage =10;
         range = 10;
@@ -22,7 +22,7 @@ public class GreatAxe extends Weapon {
     }
 
     @Override
-    protected int calculDamage(){
+    protected int computeDamage(){
         return d12.getAThrow() + damage;
     }
 

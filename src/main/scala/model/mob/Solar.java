@@ -2,31 +2,26 @@ package model.mob;
 
 import model.weapon.GreatSword;
 import model.weapon.LongBow;
-import model.weapon.Weapon;
-
-import java.util.ArrayList;
 
 public class Solar extends Mob {
 
-    public Solar(){
+    public Solar(int id){
+        this.id = id;
         this.name = "Solar";
+        this.team = 1;
         this.health = 363;
         this.armor = 44;
         this.weapons.add(new GreatSword(this));
         this.weapons.add(new LongBow(this));
         this.canFly = true;
+        this.canHeal = true;
         this.speed = 50;
+        this.attacksPerRound = 4; // The Solar can attack 4 creatures in the same round
     }
 
-    public boolean haveToMove(){
-        return false;
-    }
-
-
-    @Override
+    /*@Override
     public String think(ArrayList<Mob> enemy) {
-        //System.out.println("Début du tour de "+ name);
-        // Mob enemy = determineEnemyToAttack();
+        // Mob enemy = determineEnemiesToAttack();
         if(this.health <= (363/10)){
             heal(this);
         }
@@ -40,9 +35,11 @@ public class Solar extends Mob {
         //move(); //else, move the character
         return "move";
 
-    }
+        return "attack";
 
-    private void heal(Mob mob){
+    }*/
+
+    /*private void heal(Mob mob){
         mob.setHealth(getHealth()+50);
-    }
+    }*/
 }

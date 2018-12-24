@@ -5,7 +5,6 @@ import model.mob.Mob;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class GreatSword extends Weapon {
 
@@ -15,15 +14,15 @@ public class GreatSword extends Weapon {
     public GreatSword(Mob mob){
         super(mob);
         name = "GreatSword";
-        precision = new ArrayList<Integer>();
+        precision = new ArrayList<>();
         Collections.addAll(precision, 35, 30, 25, 20);
-        damage =18;
+        damage = 18;
         range = 10;
 
     }
 
     @Override
-    protected int calculDamage(){
+    protected int computeDamage(){
         return d6.getAThrow() + d6.getAThrow() + d6.getAThrow() + damage;
     }
 
