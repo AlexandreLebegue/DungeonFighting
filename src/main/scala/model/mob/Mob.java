@@ -222,19 +222,21 @@ public abstract class Mob implements Serializable
             double maxZ = 50;
             z = Math.random() * maxZ + minZ;
         }
-        double minX=2;
-        double maxX=50;
 
-        double minY=-50;
-        double maxY=50;
+        double minX = -200;
+        double maxX = 200;
+
+        double minY = -200;
+        double maxY = 200;
 
         boolean positionUnAble = true;
-        while(positionUnAble){
-
-            double x=Math.random() * maxX + minX;
-            double y=Math.random() * (maxY-minY) + minY;
-            double[] pos={x,y,z};
-            if (!isSomeOneThere(pos, everyone)){
+        while(positionUnAble)
+        {
+            double x = Math.random() * maxX + minX;
+            double y = Math.random() * (maxY-minY) + minY;
+            double[] pos = {x,y,z};
+            if (!isSomeOneThere(pos, everyone))
+            {
                 this.setPosition(pos);
                 positionUnAble = false;
             }
@@ -244,21 +246,20 @@ public abstract class Mob implements Serializable
 
 
     /**
-     * @param pos Position
+     * @param pos Desired position
      * @param everyone List of all mobs of the fight which already have a position
      * @return true if a mob is already present at this position, else false
      */
     private boolean isSomeOneThere(double[] pos, ArrayList<Mob> everyone){
-        int distMin=1;
-        for(Mob mob : everyone) {
-            double[] othermob = mob.getPosition();
-            double[] me = this.getPosition();
-            double distX=me[0]-othermob[0];
-            double distY=me[1]-othermob[1];
-            double distZ=me[2]-othermob[2];
-            if(distX*distX + distY*distY + distZ*distZ== distMin*distMin){
+        int distMin = 1;
+        for(Mob mob : everyone)
+        {
+            double[] otherMob = mob.getPosition();
+            double distX = pos[0] - otherMob[0];
+            double distY = pos[1] - otherMob[1];
+            double distZ = pos[2] - otherMob[2];
+            if(distX*distX + distY*distY + distZ*distZ == distMin*distMin)
                 return true;
-            }
         }
         return false;
     }
