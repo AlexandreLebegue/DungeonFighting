@@ -5,7 +5,6 @@ import java.util
 import model.mob.Mob
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
 
-import scala.collection.mutable
 
 /**
   * Class executing an iterative algorithm, using GraphX, on a Graph of creatures,
@@ -17,7 +16,7 @@ class FightGraph() extends Serializable
     * List of all mobs of the graph
     * It is updated at the end of each iteration
     */
-  var allMobs:java.util.ArrayList[Mob] = new util.ArrayList[Mob]() // List of all the mobs of the
+  var allMobs:java.util.ArrayList[Mob] = new util.ArrayList[Mob]() // List of all the mobs of the fight
 
 
   ////////// Functions for the first round of message - Determine the action of the mob //////////
@@ -76,7 +75,7 @@ class FightGraph() extends Serializable
 
     val chosenAction = vertex.mob.think(relatives)
 
-    if (chosenAction == "move")
+    if (chosenAction.equals("move"))
       {
         // Send a message "move" containing the new position
         val newPosition = vertex.mob.getMoveToPerform(allMobs)
@@ -84,7 +83,22 @@ class FightGraph() extends Serializable
         println("Mob " + vertex.mob + " will move to (" + newPosition(0) + " ; " + newPosition(1) + " ; " + newPosition(2) + ")")
         new Node(vertex.id, vertex.mob, vertex.messagesToTreat)
       }
-    else //if (chosenAction == "attack")
+    else if (chosenAction.equals("heal"))
+      {
+        val mobs = vertex.mob.determineAlliesToHeal(allMobs)
+        // Filling a queue with the Java ArrayList content, to call foreach method on the queue and update the accumulator
+        // We have to do that, because accumulators should be modified in action operations
+        for (i <- 0 until mobs.size())
+        {
+          val mob = mobs.get(i)
+          val healedHealth = vertex.mob.getHealthToHeal
+          vertex.messagesToTreat += new Message("heal", vertex.mob.getId, mob.getId, healedHealth)
+          println("Mob " + vertex.mob + " will heal " + mob + " : healed health = " + healedHealth)
+        }
+
+        new Node(vertex.id, vertex.mob, vertex.messagesToTreat)
+      }
+    else //if (chosenAction.equals("attack"))
       {
         val mobs = vertex.mob.determineEnemiesToAttack(allMobs)
         // Filling a queue with the Java ArrayList content, to call foreach method on the queue and update the accumulator
@@ -128,19 +142,36 @@ class FightGraph() extends Serializable
                   ctx.sendToDst(List(new Message("isAttacked", message.value1, message.value2, message.value3)))
                 }
             }
+          else if (message.actionToPerform.equals("heal"))
+            {
+              // Here we need to send the message to the healed mob, to tell him he is healed
+              // In order to do that, we need to find if the current dst Mob corresponds to the healed mob
+              if (!ctx.dstAttr.mob.isDead && message.value2 == ctx.dstAttr.mob.getId)
+                {
+                  ctx.sendToDst(List(new Message("isHealed", message.value1, message.value2, message.value3)))
+                }
+            }
         })
       }
 
     if(!ctx.dstAttr.mob.isDead)
       {
         ctx.dstAttr.messagesToTreat.foreach(message => {
-          if (message.actionToPerform == "move") ctx.sendToDst(List(message)) // We just need to send an array containing the message
-          else if (message.actionToPerform == "attack")
+          if (message.actionToPerform.equals("move")) ctx.sendToDst(List(message)) // We just need to send an array containing the message
+          else if (message.actionToPerform.equals("attack"))
           {
             // Again, we need to send the message to the attacked mob
             if (!ctx.srcAttr.mob.isDead && message.value2 == ctx.srcAttr.mob.getId)
             {
               ctx.sendToSrc(List(new Message("isAttacked", message.value1, message.value2, message.value3)))
+            }
+          }
+          else if (message.actionToPerform.equals("heal"))
+          {
+            // Again, we need to send the message to all healed mobs
+            if (!ctx.srcAttr.mob.isDead && message.value2 == ctx.srcAttr.mob.getId)
+            {
+              ctx.sendToSrc(List(new Message("isHealed", message.value1, message.value2, message.value3)))
             }
           }
         })
@@ -184,33 +215,62 @@ class FightGraph() extends Serializable
     var isAttacked = List[Message]()
 
     // These checks are meant to avoid "NoSuchElementException: head of empty list"
-    if (isAttackedMessages1.nonEmpty ||isAttackedMessages2.nonEmpty)
+    if (isAttackedMessages1.nonEmpty || isAttackedMessages2.nonEmpty)
       {
-        // Here we don't care of values 1 and 2, they are not useful anymore
+        // Here we don't care for values 1 and 2, they are not useful anymore
         isAttacked = List(new Message("isAttacked", 0, 0, totalDamage))
         // totalDamage = 0.0 if there is no isAttacked message
       }
 
     // isHealed messages
-    // TODO isHealed
+    val isHealedMessages1 = messages1.filter(msg => msg.actionToPerform.equals("isHealed"))
+    val isHealedMessages2 = messages2.filter(msg => msg.actionToPerform.equals("isHealed"))
+
+    var totalHealedHealth = 0.0
+    isHealedMessages1.foreach(msg => println(msg))
+    isHealedMessages2.foreach(msg => println(msg))
+    isHealedMessages1.foreach(msg => totalHealedHealth += msg.value3.toDouble)
+    isHealedMessages2.foreach(msg => totalHealedHealth += msg.value3.toDouble)
+
+    var isHealed = List[Message]()
+
+    // These checks are meant to avoid "NoSuchElementException: head of empty list"
+    if (isHealedMessages1.nonEmpty || isHealedMessages2.nonEmpty)
+    {
+      // Here we don't care for values 1 and 2, they are not useful anymore
+      isHealed = List(new Message("isHealed", 0, 0, totalHealedHealth))
+      // totalHealedHealth = 0.0 if there is no isHealed message
+    }
 
     // Finally, we group in a new List, the merged messages for move, isAttacked and isHealed actions
-    var allMessages = List[Message]()
-    if (moves.nonEmpty && isAttacked.nonEmpty)
-      {
-        allMessages = List(moves, isAttacked/*, isHealed*/).flatten
-      }
-    else if (moves.isEmpty && isAttacked.nonEmpty)
-      {
-        allMessages = List(/*attacks, heals,*/ isAttacked/*, isHealed*/).flatten
-      }
-    else if (moves.nonEmpty && isAttacked.isEmpty)
-      {
-        allMessages = List(moves/*, attacks, heals, isHealed*/).flatten
-      }
-    // TODO Add new if/else tests when adding the heal
-
-    allMessages
+    if (moves.nonEmpty && isAttacked.nonEmpty && isHealed.nonEmpty)
+    {
+      List(moves, isAttacked, isHealed).flatten
+    }
+    else if (moves.isEmpty && isAttacked.nonEmpty && isHealed.nonEmpty)
+    {
+      List(isAttacked, isHealed).flatten
+    }
+    else if (moves.nonEmpty && isAttacked.isEmpty && isHealed.nonEmpty)
+    {
+      List(moves, isHealed).flatten
+    }
+    else if (moves.nonEmpty && isAttacked.nonEmpty && isHealed.isEmpty)
+    {
+      List(moves, isAttacked).flatten
+    }
+    else if (moves.isEmpty && isAttacked.isEmpty && isHealed.nonEmpty)
+    {
+      List(isHealed).flatten
+    }
+    else if (moves.isEmpty && isAttacked.nonEmpty && isHealed.isEmpty)
+    {
+      List(isAttacked).flatten
+    }
+    else //if (moves.nonEmpty && isAttacked.isEmpty && isHealed.isEmpty)
+    {
+      List(moves).flatten
+    }
   }
 
 
@@ -232,6 +292,11 @@ class FightGraph() extends Serializable
         val newPosition = Array[Double](message.value1, message.value2, message.value3)
         vertex.mob.move(newPosition)
       }
+      else if (message.actionToPerform.equals("isHealed"))
+        {
+          vertex.mob.heal(message.value3.toInt)
+          println("Mob " + vertex.mob + " has been healed! Total health given = " + message.value3.toInt)
+        }
       else if (message.actionToPerform.equals("isAttacked"))
       {
         vertex.mob.takeDamage(message.value3.toInt)
@@ -240,7 +305,12 @@ class FightGraph() extends Serializable
       //else // if (message.actionToPerform.equals("isHealed")) {}
     })
 
-    new Node(vertex.id, vertex.mob, mutable.Queue[Message]())
+    // Update the alive or dead state of the mob for the next iteration
+    vertex.mob.updateLifeState()
+
+    vertex.messagesToTreat.dequeueAll(message => true)
+
+    new Node(vertex.id, vertex.mob, vertex.messagesToTreat)
   }
 
 

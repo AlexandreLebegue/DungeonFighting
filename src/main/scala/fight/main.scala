@@ -93,5 +93,5 @@ object main extends App
   // Creating the graph and execute the iterative algorithm
   var myGraph = Graph(myVertices, myEdges)
   val algoColoring = new FightGraph()
-  val res = algoColoring.execute(myGraph, 20)
+  val res = algoColoring.execute(myGraph, 100)
 }

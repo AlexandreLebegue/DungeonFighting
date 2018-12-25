@@ -16,26 +16,25 @@ public abstract class Mob implements Serializable
     protected int team;
     protected int speed = 15;
     protected int health = 50;
+    protected int initialHealth = 50;
     protected int armor = 10;
     protected ArrayList<Weapon> weapons = new ArrayList<>();
     protected boolean canFly = false;
     protected boolean canHeal = false;
     protected int attacksPerRound = 1;
     private double[] position;
+    private boolean isAlive = true;
 
 
     public Mob() {}
 
-    public Mob(String name, int health, int armor, ArrayList<Weapon> weapons, String type)
+    public Mob(String name, int health, int armor, ArrayList<Weapon> weapons)
     {
         this.name = name;
         this.health = health;
         this.armor = armor;
         this.weapons = weapons;
     }
-
-
-    // TODO Implement healing methods
 
 
     /**
@@ -49,7 +48,15 @@ public abstract class Mob implements Serializable
      */
     public String think(ArrayList<Mob> allMobs)
     {
-        // TODO: Implement healing in the mob classes that can do it --> return "heal"
+        if(canHeal)
+        {
+            List<Mob> allies = determineAlliesToHeal(allMobs);
+            if(!allies.isEmpty())
+            {
+                this.canHeal = false; // We can use the heal only once
+                return "heal";
+            }
+        }
 
         List<Mob> enemies = determineEnemiesToAttack(allMobs);
         for(Mob enemy : enemies)
@@ -60,6 +67,27 @@ public abstract class Mob implements Serializable
         }
 
         return "move";
+    }
+
+
+    /**
+     * Determines the allies that this mob should heal
+     * The creature always heal all creatures that have lov health
+     * @param allMobs The list of all mobs of the fight
+     * @return A List of the mobs that this creature can heal
+     */
+    public List<Mob> determineAlliesToHeal(ArrayList<Mob> allMobs)
+    {
+        ArrayList<Mob> aliveAllies = new ArrayList<>();
+        if(this.health <= this.initialHealth/3) {aliveAllies.add(this);       //if(name.equals("Solar")) System.out.println("hasHealedHimself");
+        }
+        for(Mob ally : allMobs)
+        {
+            // Third condition checks if life is inferior to 1/5 of the initial life of the mob
+            if(ally.getTeam() == this.team && !ally.isDead() && ally.health <= (ally.initialHealth/3)) aliveAllies.add(ally);
+        }
+
+        return aliveAllies;
     }
 
 
@@ -209,6 +237,26 @@ public abstract class Mob implements Serializable
 
 
     /**
+     * @return Healed health to give to an ally for a heal
+     */
+    public int getHealthToHeal()
+    {
+        return 100;
+    } // Default value for healing
+
+
+    /**
+     * Performs a heal by updating the health of the mob
+     * @param healedHealth The healed health to receive by this mob
+     */
+    public void heal(int healedHealth)
+    {
+        if(this.health + healedHealth >= this.initialHealth) this.health = initialHealth;
+        else this.health += healedHealth;
+    }
+
+
+    /**
      * Generates initial random positions for the mobs of a fight
      * @param everyone The list of all mobs of the fight
      */
@@ -275,7 +323,7 @@ public abstract class Mob implements Serializable
 
     public int getHealth() {return health;}
     public void setHealth(int health) {this.health = health;}
-    public boolean isDead(){ return health <= 0; }
+    //public boolean isDead(){ return health <= 0; }
 
     public int getArmor() {return armor;}
     public void setArmor(int armor) {this.armor = armor;}
@@ -288,6 +336,9 @@ public abstract class Mob implements Serializable
 
     public int getTeam() {return team;}
     public void setTeam(int team) {this.team = team;}
+
+    public boolean isDead() { return !isAlive; }
+    public void updateLifeState() { if(health <= 0) isAlive = false; else isAlive = true; }
 
     @Override
     public String toString()

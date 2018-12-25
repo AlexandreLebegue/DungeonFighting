@@ -10,6 +10,7 @@ public class OrcBarbarian extends Mob {
         this.name = "OrcBarbarian";
         this.team = 0;
         this.health = 42;
+        this.initialHealth = 42;
         this.armor = 15;
         this.weapons.add(new GreatAxe(this));
         this.weapons.add(new ThrowingAxe(this));

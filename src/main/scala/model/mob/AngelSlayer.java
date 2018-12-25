@@ -10,6 +10,7 @@ public class AngelSlayer extends Mob{
         this.name = "AngelSlayer";
         this.team = 0;
         this.health = 112;
+        this.initialHealth = 112;
         this.armor = 26;
         this.weapons.add(new LongBow(this));
         this.weapons.add(new DoubleAxe(this));

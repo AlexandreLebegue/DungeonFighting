@@ -9,6 +9,7 @@ public class WarLord extends Mob {
         this.name = "WarLord";
         this.team = 0;
         this.health = 141;
+        this.initialHealth = 141;
         this.armor = 27;
         this.weapons.add(new ThrowingAxe(this));
         this.speed = 30;

@@ -8,6 +8,7 @@ public class MovanicDeva extends Mob{
         this.name = "MovanicDeva";
         this.team = 1;
         this.health = 126;
+        this.initialHealth = 126;
         this.armor = 24;
         this.weapons.add(new GreatSword(this));
         this.canFly = true;

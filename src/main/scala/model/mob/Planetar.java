@@ -9,6 +9,7 @@ public class Planetar extends Mob{
         this.name = "Planetar";
         this.team = 1;
         this.health = 229;
+        this.initialHealth = 229;
         this.armor = 32;
         this.weapons.add(new GreatSword(this));
         this.canFly = true;
